@@ -1,6 +1,9 @@
 #![feature(exclusive_range_pattern)]
 
-use std::io::{stdin, stdout};
+use std::{
+    fmt::Display,
+    io::{stdin, stdout},
+};
 use std::{io::Write, ops::AddAssign};
 fn main() {
     let mut text: String = String::with_capacity(100);
@@ -10,7 +13,7 @@ fn main() {
         stdin().read_line(&mut text).unwrap();
         let mut ex = Executor::new();
         ex.parse(&text).unwrap();
-        println!("{:?}", ex);
+        println!("Result: {}", ex);
         text.clear();
     }
 }
@@ -20,6 +23,26 @@ struct Executor {
     stack: Vec<f64>,
     current_value: Option<f64>,
     decimal: Option<i32>,
+}
+
+impl Display for Executor {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            self.stack
+                .iter()
+                .map(|x| x.to_string())
+                .fold(String::new(), |mut a, b| {
+                    a.reserve(b.len() + 2);
+                    a.push_str(&b);
+                    a.push_str(", ");
+                    a
+                })
+                .trim()
+                .trim_end_matches(',')
+        )
+    }
 }
 
 impl Executor {
@@ -57,7 +80,7 @@ impl Executor {
     pub fn parse(&mut self, state: &str) -> Result<(), String> {
         for (index, ch) in state.chars().enumerate() {
             match ch {
-                '0'..'9' => {
+                '0'..='9' => {
                     *self += (ch as u8) - b'0';
                     Ok(())
                 }
