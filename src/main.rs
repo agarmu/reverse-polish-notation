@@ -33,14 +33,8 @@ impl Display for Executor {
             self.stack
                 .iter()
                 .map(|x| x.to_string())
-                .fold(String::new(), |mut a, b| {
-                    a.reserve(b.len() + 2);
-                    a.push_str(&b);
-                    a.push_str(", ");
-                    a
-                })
+                .join(",")
                 .trim()
-                .trim_end_matches(',')
         )
     }
 }
