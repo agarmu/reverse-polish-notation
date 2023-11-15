@@ -33,6 +33,7 @@ impl Display for Executor {
             self.stack
                 .iter()
                 .map(|x| x.to_string())
+                .collect::<Vec<String>>()
                 .join(",")
                 .trim()
         )
